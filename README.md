@@ -113,17 +113,17 @@ $$
     5 & 3\\
     4 & 2
   \end{matrix}
-  @>c>>
+  @>>>
   \begin{matrix}
     8 & 5\\
     8 & 4
   \end{matrix}\\
-  @VcVV @VVcV\\
+  @VVV @VVV\\
   \begin{matrix}
     9 & 9\\
     5 & 3
   \end{matrix}
-  @>c>>
+  @>>>
   \begin{matrix}
     0 & 9\\
     9 & 5
