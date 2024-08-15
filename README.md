@@ -1,30 +1,31 @@
 # Кодировка H_Code
 
-### Операции
-> A, B - числа (могут быть с ведущем 0)
-> a, b - отдельные цифры числа
-> A<sub>n</sub> - цифра числа A в позиции n
-
-
-$$ab | cd = abcd$$
-
-$$a[+]b=(a + b)\mod10$$
-
-$$a' = (10 - a)\mod10$$
-
-$$a[-]b=(a - b + 10)\mod10$$
-
-$$a[-]b = a[+]b'$$
+## Операции
+- A, B - числа (могут быть с ведущем 0);
+- a, b - отдельные цифры числа;
+- A<sub>n</sub> - цифра числа A в позиции n
 
 ---
 
-$$A\ [+]\ B = (A_0 [+] B_0)|\ ...\ |\ (A_n [+] B_n)$$
+$$A = [a,b,c,d]$$
 
-$$A' = A_0'|\ ...\ |A_n'$$
+$$a \tilde+ b=(a + b)\mod10$$
 
-$$A\ [-]\ B = A_0 [-] B_0|...|A_n [-] B_n$$
+$$a' = (10 - a)\mod10$$
 
-$$A\ [-]\ B = A\ [+]\ B'$$
+$$a \tilde- b=(a - b + 10)\mod10$$
+
+$$a \tilde-b = a \tilde+ b'$$
+
+---
+
+$$A \tilde+ B = [A_0\tilde+B_0,...,A_n \tilde+ B_n]$$
+
+$$A' = [A_0',...,A_n']$$
+
+$$A \tilde- B = [A_0 \tilde- B_0,...,A_n \tilde- B_n]$$
+
+$$A \tilde- B = A \tilde+ B'$$
 
 ---
 
@@ -32,41 +33,111 @@ $$A\xrightarrow{code}X$$
 
 $$X\xrightarrow{decode}A$$
 
-$$A\xRightarrow{code-loop}X$$
+$$A\xrightarrow{code-loop}X$$
 
-$$A\xRightarrow{code-block [key]}X$$
+$$A\xrightarrow{code-block [key]}X$$
 
-### Описание
+---
+
+## Описание
 ***Кодирование:***
 
-$$14324\xrightarrow{code}29931$$
+$$
+[1,4,3,2,4]
+\xrightarrow{code}
+[2,9,9,3,1]$$
 
 ***Декодирование:***
 
-$$29931\xrightarrow{decode}14324$$
+$$[2,9,9,3,1]
+\xrightarrow{decode}
+[1,4,3,2,4]$$
 
-### Циклы
-***2х значные***
+## Циклы
+***2-ух значные:***
 
-$$\underbrace{00}_1\xrightarrow{code}00$$
+$$
+\underbrace{[0,0]}_{1}
+\xrightarrow{code}[0,0]
+$$
 
-$$\underbrace{05\xrightarrow{code}50\xrightarrow{code}55}_3\xrightarrow{code}05$$
+$$
+\underbrace{
+  [0,5]
+  \xrightarrow{code}[5,0]
+  \xrightarrow{code}[5,5]
+  }_3
+\xrightarrow{code}
+[0,5]
+$$
 
-$$\underbrace{26\xrightarrow{code}42\xrightarrow{code}84\xrightarrow{code}68}_4\xrightarrow{code}26$$
+$$\underbrace{
+  [2,6]
+  \xrightarrow{code}[4,2]
+  \xrightarrow{code}[8,4]
+  \xrightarrow{code}[6,8]
+  }_4
+\xrightarrow{code}
+[2,6]
+$$
 
-$$\underbrace{13\xrightarrow{code}...}_{12}\xrightarrow{code}13$$
+$$\underbrace{
+  [1,3]
+  \xrightarrow{code}...
+  }_{12}
+\xrightarrow{code}[1,3]
+$$
 
-$$\underbrace{02\xrightarrow{code}...}_{20}\xrightarrow{code}02$$
+$$
+\underbrace{
+  [0,2]
+  \xrightarrow{code}...
+  }_{20}
+\xrightarrow{code}[0,2]
+$$
 
-$$\underbrace{01\xrightarrow{code}...}_{60}\xrightarrow{code}01$$
+$$
+\underbrace{
+  [0,1]
+  \xrightarrow{code}...
+  }_{60}
+\xrightarrow{code}
+[0,1]
+$$
 
-### Блоки
+## Блоки
 
-### Использование
+$$
+\begin{CD}
+  \begin{matrix}
+    5 & 3\\
+    4 & 2
+  \end{matrix}
+  @>code>>
+  \begin{matrix}
+    8 & 5\\
+    8 & 4
+  \end{matrix}\\
+  @VcodeVV @VVcodeV\\
+  \begin{matrix}
+    9 & 9\\
+    5 & 3
+  \end{matrix}
+  @>code>>
+  \begin{matrix}
+    0 & 9\\
+    9 & 5
+  \end{matrix}
+\end{CD}
+$$
+
+## Использование
 
 ```haskell
+import HomaCode
+
 -- Test
-a :: IO ()
-a = do
-  putStrLn "Hello"
+main :: IO ()
+main = do
+  putStrLn $ code [1,2,3,4]
 ```

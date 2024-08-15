@@ -9,6 +9,8 @@ module HomaCode (
   , sumData
   , difData
 
+  , findLoop
+
   , add
   , sub
   , neg
@@ -22,7 +24,6 @@ neg n = (10 - n) `mod` 10
 
 sub :: Int -> Int -> Int
 sub a b = add a (neg b)
--- sub a b = (10 + a - b) `mod` 10
 
 
 
@@ -44,15 +45,11 @@ code n = map (uncurry sub) pairs
     pairs = reverse $ zip n (0 : n)
 
 decode :: HData -> HData
-decode n = fst $ foldr (\e (r, a) -> (r <> [add e a], add e a)) ([], 0) n
-
-_decode :: HData -> HData
-_decode n = fst $ foldr decSum ([], 0) n
+decode n = fst $ foldr decSum ([], 0) n
   where
-    decSum e (r, a) = (r <> [a'], a')
-      where
-        a' = add e a
+    decSum e (r, a) = (r <> [add e a], add e a)
 
+-- decode n = fst $ foldr (\e (r, a) -> (r <> [add e a], add e a)) ([], 0) n
 
 codeN :: Int -> HData -> HData
 codeN n arr = iterate code arr !! n
@@ -62,5 +59,7 @@ decodeN n arr = iterate decode arr !! n
 
 -- Loops
 
+findLoop :: HData -> Int
+findLoop _ = 0
 
 -- Matrix map
