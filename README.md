@@ -109,25 +109,29 @@ $$
 
 $$
 \begin{CD}
-  \begin{matrix}
+  \begin{array}{c|c}
     5 & 3\\
+    \hline
     4 & 2
-  \end{matrix}
+  \end{array}
   @>>>
-  \begin{matrix}
+  \begin{array}{c|c}
     8 & 5\\
+    \hline
     8 & 4
-  \end{matrix}\\
+  \end{array}\\
   @VVV @VVV\\
-  \begin{matrix}
+  \begin{array}{c|c}
     9 & 9\\
+    \hline
     5 & 3
-  \end{matrix}
+  \end{array}
   @>>>
-  \begin{matrix}
+  \begin{array}{c|c}
     0 & 9\\
+    \hline
     9 & 5
-  \end{matrix}
+  \end{array}
 \end{CD}
 $$
 
