@@ -24,13 +24,16 @@ $$A\xRightarrow{code-block [key]}X$$
 
 ### Описание
 ***Кодирование:***
+
 $$14324\xrightarrow{code}29931$$
 
 ***Декодирование:***
+
 $$29931\xrightarrow{decode}14324$$
 
 ### Циклы
 ***2х значные***
+
 $$\underbrace{00}_1\xrightarrow{code}00$$
 
 $$\underbrace{05\xrightarrow{code}50\xrightarrow{code}55}_3\xrightarrow{code}05$$
