@@ -1,8 +1,8 @@
 # Кодировка H_Code
 
 ## Операции
-- A, B - числа (могут быть с ведущем 0);
-- a, b - отдельные цифры числа;
+- A, B - числа в виде списка элементов
+- a, b - отдельные цифры числа
 - A<sub>n</sub> - цифра числа A в позиции n
 
 ---
@@ -29,29 +29,47 @@ $$A \tilde- B = A \tilde+ B'$$
 
 ---
 
-$$A\xrightarrow{code}X$$
+$$A\xrightarrow{code}X_A$$
 
-$$X\xrightarrow{decode}A$$
+$$X_A\xrightarrow{decode}A$$
 
-$$A\xrightarrow{code-loop}X$$
+$$X_A\tilde+X_B=X_{A\tilde+B}$$
 
-$$A\xrightarrow{code-block [key]}X$$
+$$X_A\tilde-X_B=X_{A\tilde-B}$$
+
+---
+
+$$A\xrightarrow{cLoop}L_A$$
+
+---
+
+$$A\xrightarrow{cBlock(x,y[,key])}B_A$$
 
 ---
 
 ## Описание
 ***Кодирование:***
 
+
 $$
 [1,4,3,2,4]
 \xrightarrow{code}
-[2,9,9,3,1]$$
+[2,9,9,3,1]
+$$
+
+$$
+reverse[(1\tilde-0),(4\tilde-1),(3\tilde-4),(2\tilde-3),(4\tilde-2)] = [2,9,9,3,1]
+$$
 
 ***Декодирование:***
 
-$$[2,9,9,3,1]
+$$
+[2,9,9,3,1]
 \xrightarrow{decode}
-[1,4,3,2,4]$$
+[1,4,3,2,4]
+$$
+
+$$[0,0,0,0,2]\tilde+[0,0,0,9,9]\tilde+[0,0,9,9,9]\tilde+[0,3,3,3,3]\tilde+[1,1,1,1,1]=[1,4,3,2,4]$$
 
 ## Циклы
 ***2-ух значные:***
@@ -84,6 +102,7 @@ $$
 $$\underbrace{
   [1,3]
   \xrightarrow{code}...
+  \xrightarrow{code}[3,4]
   }_{12}
 \xrightarrow{code}[1,3]
 $$
@@ -92,6 +111,7 @@ $$
 \underbrace{
   [0,2]
   \xrightarrow{code}...
+  \xrightarrow{code}[2,2]
   }_{20}
 \xrightarrow{code}[0,2]
 $$
@@ -100,6 +120,7 @@ $$
 \underbrace{
   [0,1]
   \xrightarrow{code}...
+  \xrightarrow{code}[1,1]
   }_{60}
 \xrightarrow{code}
 [0,1]
