@@ -9,23 +9,23 @@
 
 $$A = [A_0,A_1,A_2,A_3] = [a,b,c,d]$$
 
-$$a \tilde+ b=(a + b)\bmod10$$
+$$a \oplus b=(a + b)\bmod10$$
 
-$$a' = (10 - a)\bmod10$$
+$$a' = (10 - a)\bmod 10$$
 
-$$a \tilde- b=(a - b + 10)\bmod10$$
+$$a \ominus b=(a - b + 10)\bmod10$$
 
-$$a \tilde-b = a \tilde+ b'$$
+$$a \ominus b = a\oplus b'$$
 
 ---
 
-$$A \tilde+ B = [A_0\tilde+B_0,...,A_n \tilde+ B_n]$$
+$$A \oplus B = [A_0\oplus B_0,...,A_n\oplus B_n]$$
 
 $$A' = [A_0',...,A_n']$$
 
-$$A \tilde- B = [A_0 \tilde- B_0,...,A_n \tilde- B_n]$$
+$$A \ominus B = [A_0 \ominus B_0,...,A_n \ominus B_n]$$
 
-$$A \tilde- B = A \tilde+ B'$$
+$$A \ominus B = A\oplus B'$$
 
 ---
 
@@ -33,9 +33,9 @@ $$A\xrightarrow{code}X_A$$
 
 $$X_A\xrightarrow{decode}A$$
 
-$$X_A\tilde+X_B=X_{A\tilde+B}$$
+$$X_A\oplus X_B=X_{A\tilde+B}$$
 
-$$X_A\tilde-X_B=X_{A\tilde-B}$$
+$$X_A\ominus X_B=X_{A\ominus B}$$
 
 ---
 
@@ -58,11 +58,11 @@ $$
 $$
 
 $$
-\text{reverse }([1,4,3,2,4]\tilde-[0,1,4,3,2,\xcancel4])
+\text{reverse }([1,4,3,2,4]\ominus[0,1,4,3,2,\cancel4]) = [2,9,9,3,1]
 $$
 
 $$
-= \text{reverse }[(1\tilde-0),(4\tilde-1),(3\tilde-4),(2\tilde-3),(4\tilde-2)] = [2,9,9,3,1]
+\text{reverse }[(1\ominus0),(4\ominus1),(3\ominus4),(2\ominus3),(4\ominus2)] = [2,9,9,3,1]
 $$
 
 ***Декодирование:***
@@ -73,7 +73,7 @@ $$
 [1,4,3,2,4]
 $$
 
-$$[0,0,0,0,2]\tilde+[0,0,0,9,9]\tilde+[0,0,9,9,9]\tilde+[0,3,3,3,3]\tilde+[1,1,1,1,1]=[1,4,3,2,4]$$
+$$[0,0,0,0,2]\oplus[0,0,0,9,9]\oplus[0,0,9,9,9]\oplus[0,3,3,3,3]\oplus[1,1,1,1,1]=[1,4,3,2,4]$$
 
 ## Циклы
 ***2-ух значные:***
