@@ -52,14 +52,14 @@ decode n = fst $ foldr decSum ([], 0) n
 -- decode n = fst $ foldr (\e (r, a) -> (r <> [add e a], add e a)) ([], 0) n
 
 codeN :: Int -> HData -> HData
-codeN n arr = iterate code arr !! n
+codeN n hd = iterate code hd !! n
 
 decodeN :: Int -> HData -> HData
-decodeN n arr = iterate decode arr !! n
+decodeN n hd = iterate decode hd !! n
 
 -- Loops
 
 findLoop :: HData -> Int
-findLoop _ = 0
+findLoop hd = foldr (\he n -> if he == hd then 1 else n + 1) 0 (iterate code (code hd))
 
 -- Matrix map

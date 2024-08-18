@@ -7,13 +7,13 @@
 
 ---
 
-$$A = [a,b,c,d]$$
+$$A = [A_0,A_1,A_2,A_3] = [a,b,c,d]$$
 
-$$a \tilde+ b=(a + b)\mod10$$
+$$a \tilde+ b=(a + b)\bmod10$$
 
-$$a' = (10 - a)\mod10$$
+$$a' = (10 - a)\bmod10$$
 
-$$a \tilde- b=(a - b + 10)\mod10$$
+$$a \tilde- b=(a - b + 10)\bmod10$$
 
 $$a \tilde-b = a \tilde+ b'$$
 
@@ -58,7 +58,11 @@ $$
 $$
 
 $$
-reverse[(1\tilde-0),(4\tilde-1),(3\tilde-4),(2\tilde-3),(4\tilde-2)] = [2,9,9,3,1]
+\text{reverse }([1,4,3,2,4]\tilde-[0,1,4,3,2,\xcancel4])
+$$
+
+$$
+= \text{reverse }[(1\tilde-0),(4\tilde-1),(3\tilde-4),(2\tilde-3),(4\tilde-2)] = [2,9,9,3,1]
 $$
 
 ***Декодирование:***
@@ -151,7 +155,7 @@ $$
   \begin{array}{c|c}
     0 & 9\\
     \hline
-    9 & 5
+    8 & 5
   \end{array}
 \end{CD}
 $$
