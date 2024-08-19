@@ -33,13 +33,14 @@ $$A\xrightarrow{code}X_A$$
 
 $$X_A\xrightarrow{decode}A$$
 
-$$X_A\oplus X_B=X_{A\tilde+B}$$
+$$X_A\oplus X_B=X_{A\oplus B}$$
 
 $$X_A\ominus X_B=X_{A\ominus B}$$
 
 ---
 
-$$A\xrightarrow{cLoop}L_A$$
+$$A\xrightarrow{code^{30}}X^{30}_A$$
+$$A\xrightarrow{code^A}L_A$$
 
 ---
 
@@ -76,8 +77,45 @@ $$
 $$[0,0,0,0,2]\oplus[0,0,0,9,9]\oplus[0,0,9,9,9]\oplus[0,3,3,3,3]\oplus[1,1,1,1,1]=[1,4,3,2,4]$$
 
 ## Циклы
-***2-ух значные:***
 
+## Блоки
+
+$$
+\begin{CD}
+  \begin{array}{c|c}
+    5 & 3\\
+    \hline
+    4 & 2
+  \end{array}
+  @>>>
+  \begin{array}{c|c}
+    8 & 5\\
+    \hline
+    8 & 4
+  \end{array}\\
+  @VVV @VVV\\
+  \begin{array}{c|c}
+    9 & 9\\
+    \hline
+    5 & 3
+  \end{array}
+  @>>>
+  \begin{array}{c|c}
+    0 & 9\\
+    \hline
+    8 & 5
+  \end{array}
+\end{CD}
+$$
+
+## 2-ух значные коды
+
+***Правила***
+$$
+A = X_A\oplus X^2_A
+$$
+
+***Циклы:***
 $$
 \underbrace{[0,0]}_{1}
 \xrightarrow{code}[0,0]
@@ -128,36 +166,6 @@ $$
   }_{60}
 \xrightarrow{code}
 [0,1]
-$$
-
-## Блоки
-
-$$
-\begin{CD}
-  \begin{array}{c|c}
-    5 & 3\\
-    \hline
-    4 & 2
-  \end{array}
-  @>>>
-  \begin{array}{c|c}
-    8 & 5\\
-    \hline
-    8 & 4
-  \end{array}\\
-  @VVV @VVV\\
-  \begin{array}{c|c}
-    9 & 9\\
-    \hline
-    5 & 3
-  \end{array}
-  @>>>
-  \begin{array}{c|c}
-    0 & 9\\
-    \hline
-    8 & 5
-  \end{array}
-\end{CD}
 $$
 
 ## Использование
