@@ -40,6 +40,7 @@ $$X_A\ominus X_B=X_{A\ominus B}$$
 ---
 
 $$A\xrightarrow{code^{30}}X^{30}_A$$
+
 $$A\xrightarrow{code^A}L_A$$
 
 ---
