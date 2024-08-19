@@ -6,6 +6,7 @@ module HomaCode (
   , decodeN
 
   , toHData
+  , toHDataN
   , fromHData
 
   , negData
@@ -16,11 +17,14 @@ module HomaCode (
   , findCount
   , findLoop
   , findLoopArr
+  , findLoops
 
   , add
   , sub
   , neg
   ) where
+
+import Data.List ( (\\) )
 
 add :: Int -> Int -> Int
 add a b = (a + b) `mod` 10
@@ -41,6 +45,12 @@ toHData n = map (\pow -> (n `div` pow) `mod` 10) powArr
     len = length $ show n
     powLen = reverse [0 .. len - 1]
     powArr = map (10 ^) powLen
+
+toHDataN :: Int -> Int -> HData
+toHDataN c n = replicate (c - ldt) 0 <> dt
+  where
+    dt = toHData n
+    ldt = length dt
 
 fromHData :: HData -> Int
 fromHData hd = sum $ zipWith (*) hd powArr
@@ -81,28 +91,36 @@ decodeN n hd = iterate decode hd !! n
 -- Loops
 
 recurseCode :: HData -> HData
-recurseCode hd = iterate code hd !! fromHData hd
+recurseCode hd = iterate code hd !! (hnum `mod` findLoop hd)
+  where
+    hnum = fromHData hd
 
 findLoop :: HData -> Int
-findLoop hd = foldr 
+findLoop hd = foldr
   (\he n -> if he == hd then 1 else n + 1) 0
   $ iterate code (code hd)
 
 findCount :: HData -> HData -> Int
-findCount ihd hd = foldr 
+findCount ihd hd = foldr
   (\he n -> if he == hd then 1 else n + 1) 0
   $ iterate code (code ihd)
 
 findLoopArr :: HData -> [HData]
-findLoopArr hd = hd : foldr 
+findLoopArr hd = hd : foldr
   (\he n -> if he == hd then [] else [he] <> n) []
   (iterate code $ code hd)
 
--- findLoopGroups :: HData -> HData -> Int
--- findLoopGroups hda hdb = map (\e -> )
---   where
---     d1 = fromHData hda
---     d2 = fromHData hdb
---     lp = [d1..d2]
+
+
+findLoops :: Int -> [(HData, Int)]
+findLoops n = (toHDataN n 0, 1) : res
+  where
+    res = findLoops' n $ map (toHDataN n) [1 .. (10^n) - 1]
+
+findLoops' :: Int -> [HData] -> [(HData, Int)]
+findLoops' _ [] = []
+findLoops' n (x:xs) = (x, length arr) : findLoops' n (xs \\ arr)
+  where
+    arr = findLoopArr x
 
 -- Matrix map
