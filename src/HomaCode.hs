@@ -15,9 +15,17 @@ module HomaCode (
 
   , recurseCode
   , findCount
+  , findArr
+
   , findLoop
   , findLoopArr
+  , findLoopId
+
+  {-
+  -- 
   , findLoops
+  , findLoopsOdd
+  -}
 
   , add
   , sub
@@ -25,6 +33,7 @@ module HomaCode (
   ) where
 
 import Data.List ( (\\) )
+import Data.Maybe
 
 add :: Int -> Int -> Int
 add a b = (a + b) `mod` 10
@@ -76,11 +85,7 @@ code n = map (uncurry sub) pairs
     pairs = reverse $ zip n (0 : n)
 
 decode :: HData -> HData
-decode n = fst $ foldr decSum ([], 0) n
-  where
-    decSum e (r, a) = (r <> [add e a], add e a)
-
--- decode n = fst $ foldr (\e (r, a) -> (r <> [add e a], add e a)) ([], 0) n
+decode n = fst $ foldr (\e (r, a) -> (r <> [add e a], add e a)) ([], 0) n
 
 codeN :: Int -> HData -> HData
 codeN n hd = iterate code hd !! n
@@ -89,38 +94,62 @@ decodeN :: Int -> HData -> HData
 decodeN n hd = iterate decode hd !! n
 
 -- Loops
-
 recurseCode :: HData -> HData
 recurseCode hd = iterate code hd !! (hnum `mod` findLoop hd)
   where
     hnum = fromHData hd
 
-findLoop :: HData -> Int
-findLoop hd = foldr
-  (\he n -> if he == hd then 1 else n + 1) 0
-  $ iterate code (code hd)
 
-findCount :: HData -> HData -> Int
-findCount ihd hd = foldr
-  (\he n -> if he == hd then 1 else n + 1) 0
-  $ iterate code (code ihd)
+findCount :: HData -> HData -> Maybe Int
+findCount ihd hd = if res == maxlen
+                   then Nothing
+                   else Just res
+  where
+    res = foldr
+      (\he n -> if he == hd then 1 else n + 1) 0
+      $ take maxlen $ iterate code (code ihd)
+    maxlen = 10^nu
+    nu = length ihd
+
+
+findArr :: HData -> HData -> Maybe [HData]
+findArr ihd hd = if length res == maxlen
+                 then Nothing
+                 else Just res
+  where
+    res = ihd : foldr
+      (\he n -> if he == hd then [] else [he] <> n) []
+      (take maxlen $ iterate code $ code ihd)
+    maxlen = 10^nu
+    nu = length ihd
+
+
+findLoop :: HData -> Int
+findLoop hd = fromMaybe 0 (findCount hd hd)
 
 findLoopArr :: HData -> [HData]
-findLoopArr hd = hd : foldr
-  (\he n -> if he == hd then [] else [he] <> n) []
-  (iterate code $ code hd)
+findLoopArr hd = fromMaybe [] (findArr hd hd)
+
+findLoopId :: HData -> HData
+findLoopId = minimum . findLoopArr
 
 
-
+{-
 findLoops :: Int -> [(HData, Int)]
 findLoops n = (toHDataN n 0, 1) : res
   where
     res = findLoops' n $ map (toHDataN n) [1 .. (10^n) - 1]
+
+findLoopsOdd :: Int -> [(HData, Int)]
+findLoopsOdd n = (toHDataN n 0, 1) : res
+  where
+    res = findLoops' n $ map (toHDataN n) [1 .. 9]
 
 findLoops' :: Int -> [HData] -> [(HData, Int)]
 findLoops' _ [] = []
 findLoops' n (x:xs) = (x, length arr) : findLoops' n (xs \\ arr)
   where
     arr = findLoopArr x
+-}
 
 -- Matrix map
