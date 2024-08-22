@@ -142,7 +142,7 @@ $$
 \begin{CD}
   \begin{matrix} 5 & 3 \\
                  4 & 2     \end{matrix}
-  @>code>>
+  \ @>code>> \ 
   \begin{matrix} 8 & 5 \\
                  8 & 4     \end{matrix}
   \\
@@ -150,7 +150,7 @@ $$
   \\
   \begin{matrix} 9 & 9 \\
                  5 & 3     \end{matrix}
-  @>code>>
+  \ @>code>> \ 
   \begin{matrix} 0 & 9 \\
                  8 & 5     \end{matrix}\end{CD}
 $$
