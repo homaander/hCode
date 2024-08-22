@@ -150,7 +150,7 @@ $$
   \\
   \begin{matrix} 9 & 9 \\
                  5 & 3     \end{matrix}
-  \ @>\text{code}>> \ 
+  @>\text{code}>>
   \begin{matrix} 0 & 9 \\
                  8 & 5     \end{matrix}\end{CD}
 $$
