@@ -118,7 +118,7 @@ $$x = (1)_7 \ominus (5)_0$$
 
 $$x = [3,2]... \ominus [0,5]...$$
 
-$$x = [3,7]$$
+$$x = [3,7]...$$
 
 Находим цикл получивщегося числа и смещение, в результате получаем (1)<sub>47</sub>
 
@@ -145,7 +145,9 @@ $$
   @>code>>
   \begin{matrix} 8 & 5 \\
                  8 & 4     \end{matrix}
-  \\ @VcodeVV @VcodeVV \\
+  \\
+  @VcodeVV @VcodeVV 
+  \\
   \begin{matrix} 9 & 9 \\
                  5 & 3     \end{matrix}
   @>code>>
