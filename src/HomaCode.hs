@@ -14,15 +14,15 @@ module HomaCode (
   , difData
 
   , recurseCode
-  , findCount
+  , findLen
   , findArr
 
-  , findLoop
+  , findLoopLen
   , findLoopArr
   , findLoopId
+  , findLoop
 
   {-
-  -- 
   , findLoops
   , findLoopsOdd
   -}
@@ -32,16 +32,13 @@ module HomaCode (
   , neg
   ) where
 
-import Data.List ( (\\) )
 import Data.Maybe
 
-add :: Int -> Int -> Int
-add a b = (a + b) `mod` 10
-
 neg :: Int -> Int
-neg n = (10 - n) `mod` 10
+neg n   = (10 - n) `mod` 10
 
-sub :: Int -> Int -> Int
+add, sub :: Int -> Int -> Int
+add a b = (a + b) `mod` 10
 sub a b = add a (neg b)
 
 
@@ -49,89 +46,84 @@ sub a b = add a (neg b)
 type HData = [Int]
 
 toHData :: Int -> HData
-toHData n = map (\pow -> (n `div` pow) `mod` 10) powArr
+toHData num = map (\pow -> (num `div` pow) `mod` 10) powArr
   where
-    len = length $ show n
+    len = length $ show num
     powLen = reverse [0 .. len - 1]
     powArr = map (10 ^) powLen
 
 toHDataN :: Int -> Int -> HData
-toHDataN c n = replicate (c - ldt) 0 <> dt
+toHDataN c num = replicate (c - length dt) 0 <> dt
   where
-    dt = toHData n
-    ldt = length dt
+    dt = toHData num
 
 fromHData :: HData -> Int
-fromHData hd = sum $ zipWith (*) hd powArr
+fromHData hdata = sum $ zipWith (*) hdata powArr
   where
-    len = length hd
-    powLen = reverse [0 .. len - 1]
+    powLen = reverse [0 .. length hdata - 1]
     powArr = map (10 ^) powLen
 
 
 negData :: HData -> HData
 negData = map neg
 
-sumData :: HData -> HData -> HData
+sumData, difData :: HData -> HData -> HData
 sumData = zipWith add
-
-difData :: HData -> HData -> HData
 difData = zipWith sub
 
 
-code :: HData -> HData
-code n = map (uncurry sub) pairs
+code,  decode  :: HData -> HData
+code hdata = map (uncurry sub) pairs
   where
-    pairs = reverse $ zip n (0 : n)
+    pairs = reverse $ zip hdata (0 : hdata)
 
-decode :: HData -> HData
-decode n = fst $ foldr (\e (r, a) -> (r <> [add e a], add e a)) ([], 0) n
+decode hdata = fst $ 
+  foldr (\e (r, a) -> (r <> [add e a], add e a)) ([], 0) hdata
 
-codeN :: Int -> HData -> HData
-codeN n hd = iterate code hd !! n
-
-decodeN :: Int -> HData -> HData
-decodeN n hd = iterate decode hd !! n
+codeN, decodeN :: Int -> HData -> HData
+codeN   n hdata = iterate code hdata !! n
+decodeN n hdata = iterate decode hdata !! n
 
 -- Loops
 recurseCode :: HData -> HData
-recurseCode hd = iterate code hd !! (hnum `mod` findLoop hd)
+recurseCode hdata = iterate code hdata !! (hnum `mod` findLoopLen hdata)
   where
-    hnum = fromHData hd
+    hnum = fromHData hdata
 
 
-findCount :: HData -> HData -> Maybe Int
-findCount ihd hd = if res == maxlen
-                   then Nothing
-                   else Just res
+findLen :: HData -> HData -> Maybe Int
+findLen ihd hdata = if res == maxlen
+                       then Nothing
+                       else Just res
   where
     res = foldr
-      (\he n -> if he == hd then 1 else n + 1) 0
-      $ take maxlen $ iterate code (code ihd)
-    maxlen = 10^nu
-    nu = length ihd
+      (\he n -> if he == hdata then 1 else n + 1) 0
+      (take maxlen $ iterate code (code ihd))
+    maxlen = 10 ^ length ihd
 
 
 findArr :: HData -> HData -> Maybe [HData]
-findArr ihd hd = if length res == maxlen
-                 then Nothing
-                 else Just res
+findArr ihd hdata = if length res == maxlen
+                    then Nothing
+                    else Just res
   where
     res = ihd : foldr
-      (\he n -> if he == hd then [] else [he] <> n) []
+      (\he n -> if he == hdata then [] else [he] <> n) []
       (take maxlen $ iterate code $ code ihd)
-    maxlen = 10^nu
-    nu = length ihd
+    maxlen = 10 ^ length ihd
 
 
-findLoop :: HData -> Int
-findLoop hd = fromMaybe 0 (findCount hd hd)
-
-findLoopArr :: HData -> [HData]
-findLoopArr hd = fromMaybe [] (findArr hd hd)
+findLoopLen :: HData -> Int
+findLoopLen hdata = fromMaybe 0 (findLen hdata hdata)
 
 findLoopId :: HData -> HData
-findLoopId = minimum . findLoopArr
+findLoopId  = minimum . findLoopArr
+
+findLoop :: HData -> (HData, Int)
+findLoop hdata = (findLoopId hdata, findLoopLen hdata)
+
+findLoopArr :: HData -> [HData]
+findLoopArr hdata = fromMaybe [] (findArr hdata hdata)
 
 
 {-
