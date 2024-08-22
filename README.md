@@ -149,7 +149,7 @@ $$
   @VcodeVV 
   \begin{matrix} - & - \\
                  - & -     \end{matrix}
-  @VcodeVV 
+  @VVcodeV 
   \\
   \begin{matrix} 9 & 9 \\
                  5 & 3     \end{matrix}
