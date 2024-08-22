@@ -146,7 +146,7 @@ $$
   \begin{matrix} 8 & 5 \\
                  8 & 4     \end{matrix}
   \\
-  @VcodeVV @VcodeVV 
+  @VcodeVV \ \ \  @VcodeVV 
   \\
   \begin{matrix} 9 & 9 \\
                  5 & 3     \end{matrix}
