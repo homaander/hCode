@@ -142,18 +142,18 @@ $$
 \begin{CD}
   \begin{matrix} 5 & 3 \\
                  4 & 2     \end{matrix}
-  @>>\text{code}>
+  @>>>
   \begin{matrix} 8 & 5 \\
                  8 & 4     \end{matrix}
   \\
-  @VcodeVV 
+  @VVV 
   \begin{matrix} - & - \\
                  - & -     \end{matrix}
-  @VVcodeV 
+  @VVV 
   \\
   \begin{matrix} 9 & 9 \\
                  5 & 3     \end{matrix}
-  @>\text{code}>>
+  @>>>
   \begin{matrix} 0 & 9 \\
                  8 & 5     \end{matrix}\end{CD}
 $$
