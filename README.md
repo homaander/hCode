@@ -147,8 +147,8 @@ $$
                  8 & 4     \end{matrix}
   \\
   @VcodeVV 
-  \begin{matrix} \ & \ \\
-                 \ & \     \end{matrix}
+  \begin{matrix} - & - \\
+                 - & -     \end{matrix}
   @VcodeVV 
   \\
   \begin{matrix} 9 & 9 \\
