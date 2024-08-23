@@ -17,6 +17,8 @@ module HomaCode (
   , findLen
   , findArr
 
+  , nextNCode
+
   , findLoopLen
   , findLoopArr
   , findLoopId
@@ -32,7 +34,8 @@ module HomaCode (
   , neg
   ) where
 
-import Data.Maybe
+import Data.Maybe ( fromMaybe )
+
 
 neg :: Int -> Int
 neg n   = (10 - n) `mod` 10
@@ -42,15 +45,14 @@ add a b = (a + b) `mod` 10
 sub a b = add a (neg b)
 
 
-
 type HData = [Int]
 
 toHData :: Int -> HData
 toHData num = map (\pow -> (num `div` pow) `mod` 10) powArr
   where
-    len = length $ show num
-    powLen = reverse [0 .. len - 1]
     powArr = map (10 ^) powLen
+    powLen = reverse [0 .. len - 1]
+    len = length $ show num
 
 toHDataN :: Int -> Int -> HData
 toHDataN c num = replicate (c - length dt) 0 <> dt
@@ -60,8 +62,8 @@ toHDataN c num = replicate (c - length dt) 0 <> dt
 fromHData :: HData -> Int
 fromHData hdata = sum $ zipWith (*) hdata powArr
   where
-    powLen = reverse [0 .. length hdata - 1]
     powArr = map (10 ^) powLen
+    powLen = reverse [0 .. length hdata - 1]
 
 
 negData :: HData -> HData
@@ -81,35 +83,35 @@ decode hdata = fst $
   foldr (\e (r, a) -> (r <> [add e a], add e a)) ([], 0) hdata
 
 codeN, decodeN :: Int -> HData -> HData
-codeN   n hdata = iterate code hdata !! n
+codeN   n hdata = iterate code   hdata !! n
 decodeN n hdata = iterate decode hdata !! n
 
 -- Loops
 recurseCode :: HData -> HData
-recurseCode hdata = iterate code hdata !! (hnum `mod` findLoopLen hdata)
-  where
-    hnum = fromHData hdata
+recurseCode hdata = codeN (fromHData hdata `mod` findLoopLen hdata) hdata
 
+nextNCode :: Int -> HData -> [HData]
+nextNCode n ihd = take n $ iterate code (code ihd)
 
 findLen :: HData -> HData -> Maybe Int
-findLen ihd hdata = if res == maxlen
-                       then Nothing
-                       else Just res
+findLen ihd hdata = if   res == maxlen
+                    then Nothing
+                    else Just res
   where
     res = foldr
       (\he n -> if he == hdata then 1 else n + 1) 0
-      (take maxlen $ iterate code (code ihd))
+      (nextNCode maxlen ihd)
     maxlen = 10 ^ length ihd
 
 
 findArr :: HData -> HData -> Maybe [HData]
-findArr ihd hdata = if length res == maxlen
+findArr ihd hdata = if   length res == maxlen
                     then Nothing
                     else Just res
   where
     res = ihd : foldr
       (\he n -> if he == hdata then [] else [he] <> n) []
-      (take maxlen $ iterate code $ code ihd)
+      (nextNCode maxlen ihd)
     maxlen = 10 ^ length ihd
 
 
