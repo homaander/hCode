@@ -13,7 +13,9 @@ module HomaCode (
   , sumData
   , difData
 
-  , recurseCode
+  , recCodeOffset
+  , recCode
+
   , findLen
   , findArr
 
@@ -23,6 +25,10 @@ module HomaCode (
   , findLoopArr
   , findLoopId
   , findLoop
+
+  , haveIn500l
+  , haveIn500r
+  , showIn500l
 
   {-
   , findLoops
@@ -36,63 +42,24 @@ module HomaCode (
 
 import Data.Maybe ( fromMaybe )
 
-
-neg :: Int -> Int
-neg n   = (10 - n) `mod` 10
-
-add, sub :: Int -> Int -> Int
-add a b = (a + b) `mod` 10
-sub a b = add a (neg b)
-
-
 type HData = [Int]
 
-toHData :: Int -> HData
-toHData num = map (\pow -> (num `div` pow) `mod` 10) powArr
+showIn500l :: HData -> HData -> [Int]
+showIn500l a b = map (\n -> fromHData $ findLoopId (sumData a (codeN n b))) [0 .. 500]
+
+haveIn500r :: HData -> HData -> HData -> [Int]
+haveIn500r a b c = filter (>= 0) $
+    map (\n -> if findLoopId (sumData a (codeN n b)) == lid then n else -1) [0 .. 500]
   where
-    powArr = map (10 ^) powLen
-    powLen = reverse [0 .. len - 1]
-    len = length $ show num
+    lid = findLoopId c
 
-toHDataN :: Int -> Int -> HData
-toHDataN c num = replicate (c - length dt) 0 <> dt
+haveIn500l :: HData -> HData -> HData -> [Int]
+haveIn500l a b c = filter (>= 0) $
+    map (\n -> if findLoopId (sumData (codeN n a) b) == lid then n else -1) [0 .. 500]
   where
-    dt = toHData num
+    lid = findLoopId c
 
-fromHData :: HData -> Int
-fromHData hdata = sum $ zipWith (*) hdata powArr
-  where
-    powArr = map (10 ^) powLen
-    powLen = reverse [0 .. length hdata - 1]
-
-
-negData :: HData -> HData
-negData = map neg
-
-sumData, difData :: HData -> HData -> HData
-sumData = zipWith add
-difData = zipWith sub
-
-
-code,  decode  :: HData -> HData
-code hdata = map (uncurry sub) pairs
-  where
-    pairs = reverse $ zip hdata (0 : hdata)
-
-decode hdata = fst $ 
-  foldr (\e (r, a) -> (r <> [add e a], add e a)) ([], 0) hdata
-
-codeN, decodeN :: Int -> HData -> HData
-codeN   n hdata = iterate code   hdata !! n
-decodeN n hdata = iterate decode hdata !! n
-
--- Loops
-recurseCode :: HData -> HData
-recurseCode hdata = codeN (fromHData hdata `mod` findLoopLen hdata) hdata
-
-nextNCode :: Int -> HData -> [HData]
-nextNCode n ihd = take n $ iterate code (code ihd)
-
+-- Ленты
 findLen :: HData -> HData -> Maybe Int
 findLen ihd hdata = if   res == maxlen
                     then Nothing
@@ -110,7 +77,7 @@ findArr ihd hdata = if   length res == maxlen
                     else Just res
   where
     res = ihd : foldr
-      (\he n -> if he == hdata then [] else [he] <> n) []
+      (\he n -> if he == hdata then [he] else [he] <> n) []
       (nextNCode maxlen ihd)
     maxlen = 10 ^ length ihd
 
@@ -127,6 +94,68 @@ findLoop hdata = (findLoopId hdata, findLoopLen hdata)
 findLoopArr :: HData -> [HData]
 findLoopArr hdata = fromMaybe [] (findArr hdata hdata)
 
+
+-- Рекурсивные кодировки
+recCodeOffset :: HData -> Int
+recCodeOffset hdata = fromHData hdata `mod` findLoopLen hdata
+
+recCode :: HData -> HData
+recCode hdata = codeN (recCodeOffset hdata) hdata
+
+nextNCode :: Int -> HData -> [HData]
+nextNCode n ihd = take n $ iterate code (code ihd)
+
+
+-- Кодирование / декодирование
+code,  decode  :: HData -> HData
+code hdata = map (uncurry sub) pairs
+  where
+    pairs = reverse $ zip hdata (0 : hdata)
+
+decode hdata = fst $ 
+  foldr (\e (r, a) -> (r <> [add e a], add e a)) ([], 0) hdata
+
+codeN, decodeN :: Int -> HData -> HData
+codeN   n hdata = iterate code   hdata !! n
+decodeN n hdata = iterate decode hdata !! n
+
+
+-- Мат. операции с данными
+sumData, difData :: HData -> HData -> HData
+sumData = zipWith add
+difData = zipWith sub
+
+negData :: HData -> HData
+negData = map neg
+
+
+-- Приведение данных
+toHData :: Int -> HData
+toHData num = map ((`mod` 10) . (num `div`)) powArr
+  where
+    powArr = map (10 ^) powLen
+    powLen = reverse [0 .. len - 1]
+    len = length $ show num
+
+toHDataN :: Int -> Int -> HData
+toHDataN c num = replicate (c - length dt) 0 <> dt
+  where
+    dt = toHData num
+
+fromHData :: HData -> Int
+fromHData hdata = sum $ zipWith (*) hdata powArr
+  where
+    powArr = map (10 ^) powLen
+    powLen = reverse [0 .. length hdata - 1]
+
+
+-- Мат. операции с числами
+add, sub :: Int -> Int -> Int
+add a b = (a + b) `mod` 10
+sub a b = add a (neg b)
+
+neg :: Int -> Int
+neg n   = (10 - n) `mod` 10
 
 {-
 findLoops :: Int -> [(HData, Int)]
