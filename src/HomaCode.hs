@@ -28,7 +28,7 @@ module HomaCode (
 
   , haveIn500l
   , haveIn500r
-  , showIn500l
+  , showIn500r
 
   {-
   , findLoops
@@ -41,11 +41,12 @@ module HomaCode (
   ) where
 
 import Data.Maybe ( fromMaybe )
+import Data.List ( nub, sort )
 
 type HData = [Int]
 
-showIn500l :: HData -> HData -> [Int]
-showIn500l a b = map (\n -> fromHData $ findLoopId (sumData a (codeN n b))) [0 .. 500]
+showIn500r :: HData -> HData -> [Int]
+showIn500r a b = sort $ nub $ map (\n -> fromHData $ findLoopId (sumData a (codeN n b))) [0 .. 500]
 
 haveIn500r :: HData -> HData -> HData -> [Int]
 haveIn500r a b c = filter (>= 0) $
