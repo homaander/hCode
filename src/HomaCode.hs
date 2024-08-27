@@ -13,18 +13,16 @@ module HomaCode (
   , sumData
   , difData
 
-  , recCodeOffset
   , recCode
 
-  , findLen
-  , findArr
-
   , nextNCode
+  , findCodeCount
+  , findCodeArr
 
-  , findLoopLen
-  , findLoopArr
-  , findLoopId
-  , findLoop
+  , getLoopLen
+  , getLoopArr
+  , getLoopId
+  , getLoop
 
   , haveIn500l
   , haveIn500r
@@ -38,6 +36,8 @@ module HomaCode (
   , add
   , sub
   , neg
+
+  , t0,t1,t2,t3,t4,t5,t6,t7,t8,t9
   ) where
 
 import Data.Maybe ( fromMaybe )
@@ -45,26 +45,56 @@ import Data.List ( nub, sort )
 
 type HData = [Int]
 
+t0,t1,t2,t3,t4,t5,t6,t7,t8,t9 :: HData
+t0 = [0,0,0,0,0]
+t1 = [0,0,0,0,1]
+t2 = [0,0,0,0,2]
+t3 = [0,0,0,0,3]
+t4 = [0,0,0,0,4]
+t5 = [0,0,0,0,5]
+t6 = [0,0,0,0,6]
+t7 = [0,0,0,0,7]
+t8 = [0,0,0,0,8]
+t9 = [0,0,0,0,9]
+
+-- Суммы лент
 showIn500r :: HData -> HData -> [Int]
-showIn500r a b = sort $ nub $ map (\n -> fromHData $ findLoopId (sumData a (codeN n b))) [0 .. 500]
+showIn500r aTape bTape = sort $ nub $ map (\n -> fromHData $ getLoopId (sumData aTape (codeN n bTape))) [0 .. 500]
 
 haveIn500r :: HData -> HData -> HData -> [Int]
-haveIn500r a b c = filter (>= 0) $
-    map (\n -> if findLoopId (sumData a (codeN n b)) == lid then n else -1) [0 .. 500]
+haveIn500r aTape bTape resTape = filter (>= 0) $
+    map (\n -> if getLoopId (sumData aTape (codeN n bTape)) == lid then n else -1) [0 .. 500]
   where
-    lid = findLoopId c
+    lid = getLoopId resTape
 
 haveIn500l :: HData -> HData -> HData -> [Int]
-haveIn500l a b c = filter (>= 0) $
-    map (\n -> if findLoopId (sumData (codeN n a) b) == lid then n else -1) [0 .. 500]
+haveIn500l aTape bTape resTape = filter (>= 0) $
+    map (\n -> if getLoopId (sumData (codeN n aTape) bTape) == lid then n else -1) [0 .. 500]
   where
-    lid = findLoopId c
+    lid = getLoopId resTape
 
 -- Ленты
-findLen :: HData -> HData -> Maybe Int
-findLen ihd hdata = if   res == maxlen
-                    then Nothing
-                    else Just res
+getLoopLen :: HData -> Int
+getLoopLen hdata = fromMaybe 0 (findCodeCount hdata hdata)
+
+getLoopId :: HData -> HData
+getLoopId  = minimum . getLoopArr
+
+getLoop :: HData -> (HData, Int, Int, Int)
+getLoop hdata = (hid, offset, getLoopLen hdata - offset, getLoopLen hdata)
+  where
+    offset = fromMaybe 0 (findCodeCount hid hdata)
+    hid = getLoopId hdata
+
+getLoopArr :: HData -> [HData]
+getLoopArr hdata = fromMaybe [] (findCodeArr hdata hdata)
+
+
+-- Поиск преобразований
+findCodeCount :: HData -> HData -> Maybe Int
+findCodeCount ihd hdata = if res == maxlen
+                          then Nothing
+                          else Just res
   where
     res = foldr
       (\he n -> if he == hdata then 1 else n + 1) 0
@@ -72,40 +102,23 @@ findLen ihd hdata = if   res == maxlen
     maxlen = 10 ^ length ihd
 
 
-findArr :: HData -> HData -> Maybe [HData]
-findArr ihd hdata = if   length res == maxlen
-                    then Nothing
-                    else Just res
+findCodeArr :: HData -> HData -> Maybe [HData]
+findCodeArr ihd hdata = if length res == maxlen
+                        then Nothing
+                        else Just res
   where
     res = ihd : foldr
       (\he n -> if he == hdata then [he] else [he] <> n) []
       (nextNCode maxlen ihd)
     maxlen = 10 ^ length ihd
 
-
-findLoopLen :: HData -> Int
-findLoopLen hdata = fromMaybe 0 (findLen hdata hdata)
-
-findLoopId :: HData -> HData
-findLoopId  = minimum . findLoopArr
-
-findLoop :: HData -> (HData, Int)
-findLoop hdata = (findLoopId hdata, findLoopLen hdata)
-
-findLoopArr :: HData -> [HData]
-findLoopArr hdata = fromMaybe [] (findArr hdata hdata)
-
-
 -- Рекурсивные кодировки
-recCodeOffset :: HData -> Int
-recCodeOffset hdata = fromHData hdata `mod` findLoopLen hdata
 
 recCode :: HData -> HData
-recCode hdata = codeN (recCodeOffset hdata) hdata
+recCode hdata = codeN (fromHData hdata) hdata
 
 nextNCode :: Int -> HData -> [HData]
 nextNCode n ihd = take n $ iterate code (code ihd)
-
 
 -- Кодирование / декодирование
 code,  decode  :: HData -> HData
