@@ -30,6 +30,7 @@ foldl sumData t0 [codeN 1410 t1, codeN 1508 t7, codeN 1675 t8, codeN 1438 t9]
 Результат:
 foldl sumData t0 [codeN 1410 t1, t2, t3, t4, t5, t6, codeN 1508 t7, codeN 1675 t8, codeN 1438 t9]
 ```
+1
 
 $$ (1)_0=(1)_{1410}+(2)_0+(3)_0+(4)_0+(5)_0+(6)_0+(7)_{1508}+(8)_{1675}+(9)_{1438} $$
 
@@ -59,6 +60,7 @@ foldl sumData t0 [codeN (659 + 806) t7, codeN (859) t8, codeN (741 + 806) t9]
 
 foldl sumData t0 [t2, t3, t4, t5, t6, codeN (659 + 806) t7, codeN (859) t8, codeN (741 + 806) t9]
 ```
+1
 
 $$ (1)_0=+(2)_0+(3)_0+(4)_0+(5)_0+(6)_0+(7)_{1465}+(8)_{859}+(9)_{1547} $$
 
