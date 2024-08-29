@@ -69,12 +69,6 @@ findDisperceData aTape bTape resTape = filter (/= (0,0)) $
         nsum = sumData aTape (codeN n bTape)
 
 -- Ленты
-getLoopLen :: HData -> Int
-getLoopLen hdata = fromMaybe 0 (findCodeCount hdata hdata)
-
-getLoopId :: HData -> HData
-getLoopId  = minimum . getLoopArr
-
 getLoop :: HData -> (HData, Int, Int, Int)
 getLoop hdata = (hid, offset, getLoopLen hdata - offset, getLoopLen hdata)
   where
@@ -83,6 +77,12 @@ getLoop hdata = (hid, offset, getLoopLen hdata - offset, getLoopLen hdata)
 
 getLoopArr :: HData -> [HData]
 getLoopArr hdata = fromMaybe [] (findCodeArr hdata hdata)
+
+getLoopLen :: HData -> Int
+getLoopLen hdata = fromMaybe 0 (findCodeCount hdata hdata)
+
+getLoopId :: HData -> HData
+getLoopId  = minimum . getLoopArr
 
 
 -- Поиск преобразований
