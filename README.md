@@ -158,8 +158,8 @@ $$
                  8 & 4 \end{matrix}
   \\
   @VVV 
-  \begin{matrix} \bigcirc & \bigcirc \\
-                 \bigcirc & \bigcirc \end{matrix}
+  \begin{matrix}  &  \\
+                  &  \end{matrix}
   @VVV 
   \\
   \begin{matrix} 9 & 9 \\
