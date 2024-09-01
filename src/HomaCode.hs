@@ -3,6 +3,7 @@ module HomaCode (
   , decode
 
   , codeN
+  , (**>)
   , decodeN
 
   , toHData
@@ -37,7 +38,8 @@ module HomaCode (
   , sub
   , neg
 
-  , t0,t1,t2,t3,t4,t5,t6,t7,t8,t9
+  , x5zero0, x5zero1, x5zero2, x5zero3, x5zero4
+  , x5zero5, x5zero6, x5zero7, x5zero8, x5zero9
   ) where
 
 import Data.Maybe ( fromMaybe )
@@ -128,6 +130,10 @@ codeN, decodeN :: Int -> HData -> HData
 codeN   n hdata = iterate code   hdata !! n
 decodeN n hdata = iterate decode hdata !! n
 
+(**>) :: HData -> Int -> HData
+(**>) = flip codeN
+
+
 
 -- Мат. операции с данными
 sumData, difData :: HData -> HData -> HData
@@ -167,17 +173,23 @@ neg :: Int -> Int
 neg n   = (10 - n) `mod` 10
 
 -- Тестовые значения
-t0,t1,t2,t3,t4,t5,t6,t7,t8,t9 :: HData
-t0 = [0,0,0,0,0]
-t1 = [0,0,0,0,1]
-t2 = [0,0,0,0,2]
-t3 = [0,0,0,0,3]
-t4 = [0,0,0,0,4]
-t5 = [0,0,0,0,5]
-t6 = [0,0,0,0,6]
-t7 = [0,0,0,0,7]
-t8 = [0,0,0,0,8]
-t9 = [0,0,0,0,9]
+x5zero0, x5zero1, x5zero2, x5zero3, x5zero4 :: HData
+x5zero5, x5zero6, x5zero7, x5zero8, x5zero9 :: HData
+x5zero0 = [0,0,0,0,0]
+x5zero1 = [0,0,0,0,1]
+x5zero2 = [0,0,0,0,2]
+x5zero3 = [0,0,0,0,3]
+x5zero4 = [0,0,0,0,4]
+x5zero5 = [0,0,0,0,5]
+x5zero6 = [0,0,0,0,6]
+x5zero7 = [0,0,0,0,7]
+x5zero8 = [0,0,0,0,8]
+x5zero9 = [0,0,0,0,9]
+
+-- Отдельный тип для 5х лент
+-- data Tape = T HData Int
+-- t1 :: Tape
+-- t1  = T [0,0,0,0,1] 0
 
 {-
 findLoops :: Int -> [(HData, Int)]
