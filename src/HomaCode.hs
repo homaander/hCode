@@ -51,26 +51,26 @@ type HData = [Int]
 disperceMaxOffset :: Int
 disperceMaxOffset = 500
 
+-- Какие ленты можно представить из двух входящих
 showDisperceList :: HData -> HData -> [Int]
 showDisperceList aTape bTape = sort $ nub $ map (\n -> fromHData $ getLoopId (sumData aTape (codeN n bTape))) [0 .. disperceMaxOffset]
 
+-- Список сещений, которые можно применить ко второй ленте, что бы в сумме с первой получить 3
 findDisperce :: HData -> HData -> HData -> [Int]
-findDisperce aTape bTape resTape = filter (>= 0) $
-    map (\n -> if getLoopId (sumData aTape (codeN n bTape)) == lid then n else -1) [0 .. disperceMaxOffset]
-  where
-    lid = getLoopId resTape
+findDisperce = ((map fst .) .) . findDisperceData
 
+-- То же самое что и findDisperce но вторым аргументом картежа выдаёт общее смещение
 findDisperceData :: HData -> HData -> HData -> [(Int,Int)]
-findDisperceData aTape bTape resTape = filter (/= (0,0)) $
+findDisperceData aTape bTape resTape = filter (/= (-1,-1)) $
     map check [0 .. disperceMaxOffset]
   where
     lid = getLoopId resTape
     thr (_, _, a, _) = a
-    check n = if getLoopId nsum == lid then (n, thr $ getLoop nsum) else (0,0)
+    check n = if getLoopId nsum == lid then (n, thr $ getLoop nsum) else (-1,-1)
       where
         nsum = sumData aTape (codeN n bTape)
 
--- Ленты
+-- Ленты (Id, Смещение, Отр. смещение, длинна)
 getLoop :: HData -> (HData, Int, Int, Int)
 getLoop hdata = (hid, offset, getLoopLen hdata - offset, getLoopLen hdata)
   where
