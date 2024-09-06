@@ -38,8 +38,8 @@ module HomaCode (
   , sub
   , neg
 
-  , x5zero0, x5zero1, x5zero2, x5zero3, x5zero4
-  , x5zero5, x5zero6, x5zero7, x5zero8, x5zero9
+  , x5z0, x5z1, x5z2, x5z3, x5z4
+  , x5z5, x5z6, x5z7, x5z8, x5z9
   ) where
 
 import Data.Maybe ( fromMaybe )
@@ -110,7 +110,6 @@ findCodeArr ihd hdata = if length res == maxlen
     maxlen = 10 ^ length ihd
 
 -- Рекурсивные кодировки
-
 recCode :: HData -> HData
 recCode hdata = codeN (fromHData hdata) hdata
 
@@ -132,7 +131,6 @@ decodeN n hdata = iterate decode hdata !! n
 
 (**>) :: HData -> Int -> HData
 (**>) = flip codeN
-
 
 
 -- Мат. операции с данными
@@ -173,18 +171,18 @@ neg :: Int -> Int
 neg n   = (10 - n) `mod` 10
 
 -- Тестовые значения
-x5zero0, x5zero1, x5zero2, x5zero3, x5zero4 :: HData
-x5zero5, x5zero6, x5zero7, x5zero8, x5zero9 :: HData
-x5zero0 = [0,0,0,0,0]
-x5zero1 = [0,0,0,0,1]
-x5zero2 = [0,0,0,0,2]
-x5zero3 = [0,0,0,0,3]
-x5zero4 = [0,0,0,0,4]
-x5zero5 = [0,0,0,0,5]
-x5zero6 = [0,0,0,0,6]
-x5zero7 = [0,0,0,0,7]
-x5zero8 = [0,0,0,0,8]
-x5zero9 = [0,0,0,0,9]
+x5z0, x5z1, x5z2, x5z3, x5z4 :: HData
+x5z5, x5z6, x5z7, x5z8, x5z9 :: HData
+x5z0 = [0,0,0,0,0]
+x5z1 = [0,0,0,0,1]
+x5z2 = [0,0,0,0,2]
+x5z3 = [0,0,0,0,3]
+x5z4 = [0,0,0,0,4]
+x5z5 = [0,0,0,0,5]
+x5z6 = [0,0,0,0,6]
+x5z7 = [0,0,0,0,7]
+x5z8 = [0,0,0,0,8]
+x5z9 = [0,0,0,0,9]
 
 -- Отдельный тип для 5х лент
 -- data Tape = T HData Int

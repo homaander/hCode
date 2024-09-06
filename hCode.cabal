@@ -24,6 +24,7 @@ source-repository head
 library
   exposed-modules:
       HomaCode
+      HomaCodeData
   other-modules:
       Paths_hCode
   autogen-modules:
