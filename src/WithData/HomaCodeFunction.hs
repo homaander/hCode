@@ -1,16 +1,18 @@
 module WithData.HomaCodeFunction (
     Math(..)
   , Code(..)
+  , CodeRecurse(..)
   , Tapes(..)
   , DataSet(..)
 ) where
 
-import WithData.HomaCodeData ( HTape(..), HDataX(..), HNums16(..) )
+import WithData.HomaCodeData ( HTape(..), HNums16(..) )
 
-class DataSet h where
-  fromHData :: h Int -> Int
-  toHData   :: Int -> h Int
-  toHDataN  :: Int -> Int -> h Int
+class DataSet f where
+  fromHData :: Enum a => f a -> Int
+  toHData   :: Enum a => Int -> f a
+  toHDataN  :: (Math a, Enum a) => Int -> Int -> f a
+
 
 class Show a => Math a where
   -- instance
@@ -29,6 +31,7 @@ class Show a => Math a where
   (^-) :: a -> a -> a
   (^-) = sub
 
+
 class Math a => Code a where
   -- instance
   code :: a -> a
@@ -43,6 +46,8 @@ class Math a => Code a where
   (^->) :: a -> Int -> a
   (^->) = flip codeN
 
+class DataSet f => CodeRecurse f where
+  codeRecurse :: (Enum a, Code a) => f a -> f a
 
 class Code a => Tapes a where
   -- instance
@@ -54,22 +59,25 @@ class Code a => Tapes a where
 
 
 -- DataSet instance
-instance DataSet HDataX where
-  fromHData (HDX hdata) = sum $ zipWith (*) hdata powArr
+instance DataSet [] where
+  fromHData hdata = sum $ zipWith (*) (map fromEnum hdata) powArr
     where
       powArr = map (10 ^) powLen
       powLen = reverse [0 .. length hdata - 1]
-  toHData num = HDX $ map ((`mod` 10) . (num `div`)) powArr
+  toHData num = map (toEnum . (`mod` 10) . (num `div`)) powArr
     where
       powArr = map (10 ^) powLen
       powLen = reverse [0 .. len - 1]
-      len = length $ show num
-  toHDataN c num = HDX $ replicate (c - length dt) 0 <> dt
+      len    = length $ show num
+  toHDataN count num = replicate (count - length dt) zero <> dt
     where
-      (HDX dt) = toHData num
+      dt = toHData num
 
--- >>>  WithData.HomaCodeFunction.toHDataN 6 123 :: HDataX Int
+-- >>>  WithData.HomaCodeFunction.toHDataN 6 123 :: [Int]
 -- [0,0,0,1,2,3]
+
+-- >>>  WithData.HomaCodeFunction.toHDataN 6 123 :: [HNums16]
+-- Not in scope: type constructor or class `HData16'
 
 -- Math instance
 instance Math Int where
@@ -80,35 +88,38 @@ instance Math Int where
 instance Math HNums16 where
   add a b = toEnum $ (fromEnum a + fromEnum b) `mod` 16
   neg n   = toEnum $ (16 - fromEnum n) `mod` 16
-  zero = H0
+  zero = H00
 
-instance Math a => Math (HDataX a) where
-  add (HDX a) (HDX b) = HDX $ zipWith add a b
-  neg (HDX a) = HDX $ map neg a
-  zero = HDX [zero]
+instance Math a => Math [a] where
+  add = zipWith add
+  neg = map neg
+  zero = []
 
 
 -- Code 
-instance Math a => Code (HDataX a) where
-  code (HDX hdata) = HDX $ map (uncurry sub) pairs
+instance Math a => Code [a] where
+  code hdata = map (uncurry sub) pairs
     where
       pairs = reverse $ zip hdata (zero : hdata)
 
-  decode (HDX hdata) = HDX $ fst $ 
-    foldr (\e (r, a) -> (r <> [add e a], add e a)) ([], zero) hdata
+  decode hdata = fst $ 
+    foldr (\e (r, a) -> (r <> [e ^+ a], e ^+ a)) ([], zero) hdata
 
--- >>> HDX [H12,H2,H13]
--- >>> WithData.HomaCodeFunction.code (HDX [H12,H2,H13])
--- [C,2,D]
--- [B,6,C]
+instance CodeRecurse [] where
+  codeRecurse hdata = codeN (fromHData hdata) hdata
 
--- >>> HDX [H12,H2,H13,H3,H14,H4]
--- >>> WithData.HomaCodeFunction.codeN 66 (HDX [H12,H2,H13,H3,H14,H4])
+-- >>> [H12,H02,H13,H04,H06]
+-- >>> WithData.HomaCodeFunction.code [H12,H02,H13,H04,H06]
+-- [C,2,D,4,6]
+-- [2,7,B,6,C]
+
+-- >>> [H12,H02,H13,H03,H14,H04]
+-- >>> WithData.HomaCodeFunction.codeN 66 [H12,H02,H13,H03,H14,H04]
 -- [C,2,D,3,E,4]
 -- [5,8,4,C,3,2]
 
--- >>> WithData.HomaCodeFunction.decode (HDX [1,2,3] :: HDataX Int)
--- [3,5,6]
+-- >>> WithData.HomaCodeFunction.decode ([1,2,5] :: [Int])
+-- [5,7,8]
 
--- >>> WithData.HomaCodeFunction.decodeN 2 (HDX [1,2,3] :: HDataX Int)
+-- >>> WithData.HomaCodeFunction.decodeN 2 ([1,2,3] :: [Int])
 -- [6,1,4]

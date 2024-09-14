@@ -1,26 +1,26 @@
 module WithData.HomaCodeData (
     HNums16(..)
-  , HDataX(..)
   , HTape (..)
 ) where
 
-data HNums16 =  H0 |  H1 |  H2 |  H3
-             |  H4 |  H5 |  H6 |  H7
-             |  H8 |  H9 | H10 | H11
+data HNums16 = H00 | H01 | H02 | H03
+             | H04 | H05 | H06 | H07
+             | H08 | H09 | H10 | H11
              | H12 | H13 | H14 | H15
   deriving (Enum, Bounded)
 
+-- HNums16 to hex
 instance Show HNums16 where
-  show  H0 = "0"
-  show  H1 = "1"
-  show  H2 = "2"
-  show  H3 = "3"
-  show  H4 = "4"
-  show  H5 = "5"
-  show  H6 = "6"
-  show  H7 = "7"
-  show  H8 = "8"
-  show  H9 = "9"
+  show H00 = "0"
+  show H01 = "1"
+  show H02 = "2"
+  show H03 = "3"
+  show H04 = "4"
+  show H05 = "5"
+  show H06 = "6"
+  show H07 = "7"
+  show H08 = "8"
+  show H09 = "9"
   show H10 = "A"
   show H11 = "B"
   show H12 = "C"
@@ -29,15 +29,8 @@ instance Show HNums16 where
   show H15 = "F"
 
 
-newtype HDataX a = HDX [a]
-
-
-instance Show a => Show (HDataX a) where
-  show (HDX arr) = show arr 
-
-
-data HTape h = HTape {
-    tapeId :: h
+data HTape hdt = HTape {
+    tapeId     :: hdt
   , tapeOffset :: Int
   , tapeLength :: Int
 }
