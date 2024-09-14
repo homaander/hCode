@@ -3,7 +3,7 @@ module HomaCode (
   , decode
 
   , codeN
-  , (**>)
+  , (^->)
   , decodeN
 
   , toHData
@@ -129,8 +129,8 @@ codeN, decodeN :: Int -> HData -> HData
 codeN   n hdata = iterate code   hdata !! n
 decodeN n hdata = iterate decode hdata !! n
 
-(**>) :: HData -> Int -> HData
-(**>) = flip codeN
+(^->) :: HData -> Int -> HData
+(^->) = flip codeN
 
 
 -- Мат. операции с данными
