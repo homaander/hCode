@@ -1,4 +1,4 @@
-module WithData.HomaCodeData (
+module Code.HomaCodeData (
     HNums16(..)
   , HTape (..)
 ) where

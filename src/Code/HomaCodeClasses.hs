@@ -1,4 +1,4 @@
-module WithData.HomaCodeClasses (
+module Code.HomaCodeClasses (
     Math(..)
   , Code(..)
   , CodeRecurse(..)
@@ -6,7 +6,7 @@ module WithData.HomaCodeClasses (
   , DataSet(..)
 ) where
 
-import WithData.HomaCodeData ( HTape(..) )
+import Code.HomaCodeData ( HTape(..) )
 import Data.Maybe ( fromMaybe )
 
 class DataSet box where

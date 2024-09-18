@@ -23,10 +23,10 @@ source-repository head
 
 library
   exposed-modules:
+      Code.HomaCode
+      Code.HomaCodeClasses
+      Code.HomaCodeData
       HomaCode
-      WithData.HomaCode
-      WithData.HomaCodeClasses
-      WithData.HomaCodeData
   other-modules:
       Paths_hCode
   autogen-modules:

@@ -1,4 +1,4 @@
-module WithData.HomaCode (
+module Code.HomaCode (
     Math(..)
   , Code(..)
   , CodeRecurse(..)
@@ -10,8 +10,8 @@ module WithData.HomaCode (
   , findDisperseData
 ) where
 
-import WithData.HomaCodeData
-import WithData.HomaCodeClasses
+import Code.HomaCodeData
+import Code.HomaCodeClasses
 
 import Data.Maybe ( fromMaybe )
 import Data.List ( nub, sort )
@@ -54,7 +54,7 @@ instance CodeRecurse [] where
   codeRecurse hdata = codeN (fromHData hdata) hdata
   nextNCode n ihd = take n $ iterate code (code ihd)
 
--- >>>  WithData.HomaCodeFunction.toHDataN 6 123 :: [Int]
+-- >>>  Code.HomaCodeFunction.toHDataN 6 123 :: [Int]
 -- [0,0,0,1,2,3]
 
 -- Math instance
@@ -84,19 +84,19 @@ instance Math a => Code [a] where
     foldr (\e (r, a) -> (r <> [e ^+ a], e ^+ a)) ([], zero) hdata
 
 -- >>> [H12,H02,H13,H04,H06]
--- >>> WithData.HomaCodeFunction.code [H12,H02,H13,H04,H06]
+-- >>> Code.HomaCodeFunction.code [H12,H02,H13,H04,H06]
 -- [C,2,D,4,6]
 -- [2,7,B,6,C]
 
 -- >>> [H12,H02,H13,H03,H14,H04]
--- >>> WithData.HomaCodeFunction.codeN 66 [H12,H02,H13,H03,H14,H04]
+-- >>> Code.HomaCodeFunction.codeN 66 [H12,H02,H13,H03,H14,H04]
 -- [C,2,D,3,E,4]
 -- [5,8,4,C,3,2]
 
--- >>> WithData.HomaCodeFunction.decode ([1,2,5] :: [Int])
+-- >>> Code.HomaCodeFunction.decode ([1,2,5] :: [Int])
 -- [5,7,8]
 
--- >>> WithData.HomaCodeFunction.decodeN 2 ([1,2,3] :: [Int])
+-- >>> Code.HomaCodeFunction.decodeN 2 ([1,2,3] :: [Int])
 -- [6,1,4]
 
 instance (Ord a, Enum a, Math a) => Tapes [a] where
@@ -123,5 +123,5 @@ instance (Ord a, Enum a, Math a) => Tapes [a] where
         (nextNCode maxlen ihd)
       maxlen = 10 ^ length ihd
 
--- >>> WithData.HomaCodeFunction.toTape ([0,1,2,3,4] :: [Int])
+-- >>> Code.HomaCodeFunction.toTape ([0,1,2,3,4] :: [Int])
 -- HTape {tapeId = [0,0,0,0,1], tapeOffset = 17811, tapeAntiOffset = 6400, tapeLength = 24211}

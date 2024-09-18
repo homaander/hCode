@@ -1,6 +1,6 @@
 module Main (main) where
 
-import WithData.HomaCode
+import Code.HomaCode
 
 main :: IO ()
 main  = do
