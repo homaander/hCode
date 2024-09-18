@@ -24,8 +24,9 @@ source-repository head
 library
   exposed-modules:
       HomaCode
+      WithData.HomaCode
+      WithData.HomaCodeClasses
       WithData.HomaCodeData
-      WithData.HomaCodeFunction
   other-modules:
       Paths_hCode
   autogen-modules:

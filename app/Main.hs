@@ -1,7 +1,7 @@
 module Main (main) where
 
-import HomaCode
+import WithData.HomaCode
 
 main :: IO ()
 main  = do
-  print "ok"
+  print $ toTape ([1,2,3] :: [Int])
