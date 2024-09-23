@@ -7,7 +7,7 @@ data HNums16 = H00 | H01 | H02 | H03
              | H04 | H05 | H06 | H07
              | H08 | H09 | H10 | H11
              | H12 | H13 | H14 | H15
-  deriving (Enum, Eq, Ord, Bounded)
+  deriving (Enum, Eq, Ord)
 
 -- HNums16 to hex
 instance Show HNums16 where
