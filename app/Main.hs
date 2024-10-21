@@ -1,6 +1,7 @@
 module Main (main) where
 
-import Code.HomaCode
+import qualified Code.HomaCode as HC
+import Code.HomaCodeData
 
 main :: IO ()
 main  = do

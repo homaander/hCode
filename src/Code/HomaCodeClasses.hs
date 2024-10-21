@@ -6,13 +6,12 @@ module Code.HomaCodeClasses (
     Math(..)
   , Code(..)
   , CodeRecurse(..)
-  , Tapes(..)
+  , Tape(..)
   , HData(..)
   , HDataInfo(..)
 ) where
 
 import Code.HomaCodeData
-import Data.Maybe ( fromMaybe )
 import Data.List  ( nub )
 
 
@@ -36,13 +35,13 @@ class Show a => Math a where
 
 
 class Math a => HData a where
-  fromHData   :: a -> Int
-  toHData     :: Int -> a
+  fromHData   ::  a  -> Int
+  toHData     :: Int ->  a
   toHDataN    :: Int -> Int -> a
 
 
 class Math a => Code a where
-  code :: a -> a
+  code   :: a -> a
   decode :: a -> a
 
   -- default
@@ -56,7 +55,7 @@ class Math a => Code a where
   decodeN n hdata = iterate decode hdata !! n
 
   (^->) :: a -> Int -> a
-  (^->) = flip codeN
+  (^->)  = flip codeN
 
 
 class (Code a, HData a) => CodeRecurse a where
@@ -65,44 +64,56 @@ class (Code a, HData a) => CodeRecurse a where
   codeRecurse hdata = codeN (fromHData hdata) hdata
 
 
-class (Ord a, Code a) => Tapes a where
+class (Ord a, Code a) => Tape a where
   toTape :: a -> HTape a
 
-  findCodeOffset :: a -> a -> Maybe Int
-  findCodeList   :: a -> a -> Maybe [a]
+  findOffsetMaybe :: a -> a -> Maybe Int
+  findListMaybe   :: a -> a -> Maybe [a]
+
+  getTapeOffset :: a -> a -> Int
+  getTapeList   :: a -> a -> [a]
 
   -- default
   fromTape :: HTape a -> a
   fromTape (HTape h n _ _) = codeN n h
 
   getTapeId   :: a -> a
-  getTapeId = minimum . getTapeList
+  getTapeId = minimum . getTapeAll
 
   getTapeLength :: a -> Int
-  getTapeLength hdata = fromMaybe 0 (findCodeOffset hdata hdata)
+  getTapeLength hdata = getTapeOffset hdata hdata
 
-  getTapeList :: a -> [a]
-  getTapeList hdata = fromMaybe [] (findCodeList hdata hdata)
+  getTapeAll :: a -> [a]
+  getTapeAll hdata = getTapeList hdata hdata
 
 
-class (CodeRecurse a, Tapes a) => HDataInfo a where
+class (CodeRecurse a, Tape a) => HDataInfo a where
   -- Get tape_id list from sums with offset second 0-500
   showDisperseList :: a -> a -> [a]
   -- Get (offset b, anti-offset c) -> (a_0 + b_offset)_anti-offset = c_0
   findDisperseData :: a -> a -> a -> [(Int,Int)]
 
+
+
 -- Math
 instance Math Int where
-  add a b = (a + b) `mod` 10
-  neg n   = (10 - n) `mod` 10
-  zero = 0
-  getMod = 9
+  add a b = (a + b) `mod` getMod @Int
+  neg n   = (getMod @Int - n) `mod` getMod @Int
+  zero = toEnum 0
+  getMod = 10
 
 instance Math HNums16 where
-  add a b = toEnum $ (fromEnum a + fromEnum b) `mod` 16
-  neg n   = toEnum $ (16 - fromEnum n) `mod` 16
-  zero = H00
+  add a b = toEnum $ (fromEnum a + fromEnum b) `mod` getMod @HNums16
+  neg n   = toEnum $ (getMod @HNums16 - fromEnum n) `mod` getMod @HNums16
+  zero = toEnum 0
   getMod = 16
+
+instance Math HNumsL where
+  add a b = toEnum $ (fromEnum a + fromEnum b) `mod` getMod @HNumsL
+  neg n   = toEnum $ (getMod @HNumsL - fromEnum n) `mod` getMod @HNumsL
+  zero = toEnum 0
+  getMod = 37
+
 
 instance Math a => Math [a] where
   add a b = zipWith add (zerosA <> a) (zerosB <> b)
@@ -146,30 +157,41 @@ instance Math a => Code [a] where
 instance (Enum a, Math a) => CodeRecurse [a]
 
 
--- Tapes
-instance (Ord a, Enum a, Math a) => Tapes [a] where
-  toTape hdata = HTape hid offset (getTapeLength hdata - offset) (getTapeLength hdata)
+-- Tape
+instance (Ord a, Enum a, Math a) => Tape [a] where
+  toTape hdata = HTape hid offset (len - offset) len
     where
-      offset = fromMaybe 0 (findCodeOffset hid hdata)
-      hid = getTapeId hdata
+      offset  = if   offset' == len
+                then 0
+                else offset'
 
-  findCodeOffset ihd hdata = if res == maxlen
-                             then Nothing
-                             else Just res
+      offset' = getTapeOffset hid hdata
+      hid     = getTapeId     hdata
+      len     = getTapeLength hdata
+
+  getTapeOffset ihd hdata =  foldr
+        (\he n -> if he == hdata then 1 else n + 1) 0 (iterate code (code ihd))
+
+  getTapeList ihd hdata = ihd : foldr
+        (\he n -> if he == hdata then [he] else [he] <> n) [] (iterate code (code ihd))
+
+  findOffsetMaybe ihd hdata = if   res == maxlen
+                              then Nothing
+                              else Just res
     where
       res = foldr
         (\he n -> if he == hdata then 1 else n + 1) 0
         (nextNCode maxlen ihd)
-      maxlen = 10 ^ length ihd
+      maxlen = getMod @a ^ length ihd
 
-  findCodeList ihd hdata = if length res == maxlen
-                           then Nothing
-                           else Just res
+  findListMaybe ihd hdata = if   length res == maxlen
+                            then Nothing
+                            else Just res
     where
       res = ihd : foldr
         (\he n -> if he == hdata then [he] else [he] <> n) []
         (nextNCode maxlen ihd)
-      maxlen = 10 ^ length ihd
+      maxlen = getMod @a ^ length ihd
 
 
 -- HDataInfo
